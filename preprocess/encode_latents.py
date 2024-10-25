@@ -57,7 +57,8 @@ class Dataset(torch.utils.data.IterableDataset):
 
 
 # Note that SDv1.4/1.5/2.0/2.1/Modelscope use the same VAE encoder
-pretrained_model_name_or_path = "runwayml/stable-diffusion-v1-5"
+# pretrained_model_name_or_path = "runwayml/stable-diffusion-v1-5"
+pretrained_model_name_or_path = "stabilityai/stable-diffusion-xl-base-1.0"
 revision = None
 variant = None
 # You need to change this resolution to store latents for different SD training resolution. For example, SDv1.4/1.5/2.1-base use the same resolution.
@@ -112,13 +113,14 @@ def vae_encode(images):
 
 
 tar_files = [sys.argv[1]]
+print(f"VAE used: {pretrained_model_name_or_path}")
 print(tar_files)
 
 dataset = Dataset(tar_files)
 assert len(dataset.tar_files) == 1
-os.makedirs("latents", exist_ok=True)
+os.makedirs(f"latents-{str(resolution)}", exist_ok=True)
 filename = os.path.splitext(dataset.tar_files[0].split("/")[-1])[0] + ".npy"
-save_path = "latents/" + filename
+save_path = f"latents-{str(resolution)}/" + filename
 if os.path.exists(save_path):
     print(f"File {save_path} exists, skipping")
     exit()
